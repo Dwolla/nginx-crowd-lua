@@ -1,15 +1,56 @@
-server {
-  listen 80;
+user www-data;
+worker_processes 4;
+pid /run/nginx.pid;
 
-  server_name host.example.com;
-  root /var/www/host.example.com;
+env CROWD_URL;
+env CROWD_USER;
+env CROWD_PWD;
 
-  location ~ ^/protected/ {
-    set $cwd_user 'unknown';
-    set $cwd_email 'unknown@unknown.com';
+events {
+  worker_connections 768;
+  multi_accept on;
+}
 
-    access_by_lua_file /etc/nginx/lua/crowd-auth.lua;
+error_log /dev/stdout info;
+http {
+  access_log /dev/stdout;
+  server {
+    listen 80;
+    server_name _;
 
-    fastcgi_param REMOTE_USER $cwd_user;
+    location / {
+      root /www/data;
+      set_by_lua $crowd_url 'return os.getenv("CROWD_URL")'; 
+      set $cwd_crowd_url $crowd_url;
+      set_by_lua $crowd_user 'return os.getenv("CROWD_USER")'; 
+      set $cwd_crowd_user $crowd_user;
+      set_by_lua $crowd_pwd 'return os.getenv("CROWD_PWD")'; 
+      set $cwd_crowd_pwd $crowd_pwd;
+
+      set $cwd_authentication_realm 'TEST';
+      set $cwd_requires_one_group_out_of 'TEST';
+      set $cwd_user 'unknown';
+      set $cwd_group 'unknown';
+      set $cwd_email 'unknown@unknown.com';
+      access_by_lua_file /nginx-crowd-lua/crowd-auth.lua;
+      fastcgi_param REMOTE_USER $cwd_user;
+    }
   }
 }
+daemon off;
+
+# server {
+#  listen 80;
+
+#  server_name host.example.com;
+#  root /var/www/host.example.com;
+
+#  location ~ ^/protected/ {
+#    set $cwd_user 'unknown';
+#    set $cwd_email 'unknown@unknown.com';
+
+#    access_by_lua_file /etc/nginx/lua/crowd-auth.lua;
+
+#    fastcgi_param REMOTE_USER $cwd_user;
+#  }
+#}
