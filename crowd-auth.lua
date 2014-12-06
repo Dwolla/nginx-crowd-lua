@@ -117,6 +117,6 @@ for requiredGroup in (string.gsub(ngx.var.cwd_requires_one_group_out_of, " ", ""
      end
 end
 
-if allowed == true then
+if forbidden == true then
   ngx.exit(ngx.HTTP_FORBIDDEN)
 end
