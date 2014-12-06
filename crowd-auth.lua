@@ -104,15 +104,19 @@ if(ngx.var.cwd_requires_one_group_out_of == nil or ngx.var.cwd_requires_one_grou
   ngx.exit(ngx.HTTP_FORBIDDEN)
 end
 
+local forbidden = true
 for requiredGroup in (string.gsub(ngx.var.cwd_requires_one_group_out_of, " ", "") .. ","):gmatch("([^,]*)") do
      if(requiredGroup ~= "") then
           for _, group in pairs(resGroups.body.groups) do
                if(requiredGroup:lower() == group.name:lower()) then
-                    ngx.var.cwd_group = group.name;
-                    ngx.exit(ngx.HTTP_OK)
+                    ngx.var.cwd_group = group.name
+                    forbidden = false
+                    do return end
                end
           end
      end
 end
 
-ngx.exit(ngx.HTTP_FORBIDDEN)
+if allowed == true then
+  ngx.exit(ngx.HTTP_FORBIDDEN)
+end
