@@ -26,7 +26,7 @@ end
 local auth_header = ngx.req.get_headers().authorization
 
 local prompt = "default"
-if(ngx.var.cwd_authentication_realm ~= nil and ngx.var.cwd_authentication_realm =="") then
+if(ngx.var.cwd_authentication_realm ~= nil and ngx.var.cwd_authentication_realm ~="") then
   prompt = string.gsub(ngx.var.cwd_authentication_realm, "\"", "")
 end
 
