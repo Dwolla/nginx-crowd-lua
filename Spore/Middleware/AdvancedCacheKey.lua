@@ -3,7 +3,7 @@ local m = {}
 
 function m:call (req)
   if self.key then
-    req.headers["x-advancedCacheKey"] = self.key
+    req.headers["advancedCacheKey"] = self.key
   end
 end
 
