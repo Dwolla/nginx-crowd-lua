@@ -74,6 +74,10 @@ crowd:enable('Auth.Basic', {
   password = ngx.var.cwd_crowd_pwd
 })
 
+crowd:enable('AdvancedCacheKey', {
+  key = userpass[1]..userpass[2]
+})
+
 -- authenticate against crowd
 local resAuth = crowd:authentication({
   username = userpass[1]..'',
