@@ -75,7 +75,7 @@ crowd:enable('Auth.Basic', {
 })
 
 crowd:enable('AdvancedCacheKey', {
-  key = userpass[1]..userpass[2]
+  key = userpass[1]..''..userpass[2]
 })
 
 -- authenticate against crowd
@@ -90,7 +90,6 @@ local resAuth = crowd:authentication({
 if resAuth.status ~= 200 then
   ngx.header['WWW-Authenticate'] = 'Basic realm="'..prompt..'"'
   ngx.exit(ngx.HTTP_UNAUTHORIZED)
-  -- ngx.exit(ngx.HTTP_FORBIDDEN)
 end
 
 -- if we've reached here, then the supplied user/pass is good, so set the
