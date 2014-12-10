@@ -30,7 +30,7 @@ if(ngx.var.cwd_authentication_realm ~= nil and ngx.var.cwd_authentication_realm 
   prompt = string.gsub(ngx.var.cwd_authentication_realm, "\"", "")
 end
 
--- check that the header is present, and if not sead authenticate header
+-- check that the header is present, and if not send authenticate header
 if not auth_header or auth_header == '' or not string.match(auth_header, '^[Bb]asic ') then
   ngx.header['WWW-Authenticate'] = 'Basic realm="'..prompt..'"'
   ngx.exit(ngx.HTTP_UNAUTHORIZED)
@@ -88,7 +88,9 @@ local resAuth = crowd:authentication({
 
 -- error out if not successful
 if resAuth.status ~= 200 then
-  ngx.exit(ngx.HTTP_FORBIDDEN)
+  ngx.header['WWW-Authenticate'] = 'Basic realm="'..prompt..'"'
+  ngx.exit(ngx.HTTP_UNAUTHORIZED)
+  -- ngx.exit(ngx.HTTP_FORBIDDEN)
 end
 
 -- if we've reached here, then the supplied user/pass is good, so set the
