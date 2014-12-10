@@ -41,7 +41,8 @@ local mime = require 'mime'
 -- decode authenication header and verify its good
 local userpass = split(mime.unb64(split(auth_header, ' ')[2])..'', ':')
 if not userpass or #userpass ~= 2 then
-  ngx.exit(ngx.HTTP_BAD_REQUEST)
+  ngx.header['WWW-Authenticate'] = 'Basic realm="'..prompt..'"'
+  ngx.exit(ngx.HTTP_UNAUTHORIZED)
 end
 
 -- define crowd client based off spore json definition
