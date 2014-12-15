@@ -56,7 +56,7 @@ http {
   tcp_nopush on;
   keepalive_timeout 30;
 
-  proxy_cache_path ENV["APP_ROOT"] keys_zone=one:10m;
+  proxy_cache_path <%= ENV["APP_ROOT"] %>/cache keys_zone=one:10m;
 
   server { 
     server_name 'testnewbuildpack.dev.cf.hybris.com'; # modify your server name to fit your needs
